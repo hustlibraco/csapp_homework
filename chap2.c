@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-
+#include <limits.h>
 // 2.63
 int sra(int x, int k) {
 	/* Perform shift logically */
@@ -92,12 +92,39 @@ int fits_bit(int x, int n) {
 	return !(x >> n) | !~(x >> n);
 }
 
+// 2.71
+typedef unsigned packed_t;
+// 应该是没有进行符号扩展
+int xbyte(packed_t word, int bytenum) {
+	return word >> (bytenum << 3) & 0xFF;
+}
+
+int xbyte_b(packed_t word, int bytenum) {
+	return (int)word << ((3 - bytenum) << 3) >> 24; 
+}
+
+// 2.72
+// a.因为size_t是无符号类型，与maxbytes运算的结果转算成无符号数，始终大于等于0
+// b.if (maxbytes >= sizeof(val))
+
+// 2.73
+int saturating_add(int x, int y) {
+	int sum = x + y;
+	int w = (sizeof(int) << 3) - 1;
+	int sbx = x >> w;
+	int sby = y >> w;
+	int sbsum = sum >> w;
+	printf("sbx=%08x, sby=%08x, sbsum=%08x\n", sbx, sby, sbsum);
+	int pos_ovf = ~sbx & ~sby & sbsum;  // 0xffffffff when positive overflow, else 0
+	int neg_ovf = sbx & sby & ~sbsum;	// 0xffffffff when negtive overflow, else 0
+	int no_ovf = ~(pos_ovf|neg_ovf);	// 0xffffffff when add normally, 0 when overflow
+	return (pos_ovf & INT_MAX) | (neg_ovf & INT_MIN) | (no_ovf & sum);
+}
+
+
+
 int main()
-{	
-	int i;
-	for (i = -32; i < 32; ++i)
-	{
-		printf("fits_bit(%d, 4) is %d\n", i, fits_bit(i, 4));
-	}
+{
+	printf("saturating_add(0x7FFFFFFD, 0x00000001) is 0x%08x\n", saturating_add(0x7FFFFFFD, 0x00000001));
 	return 0;
 }
