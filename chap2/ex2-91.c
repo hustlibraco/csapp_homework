@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <limits.h>
-#include <stdlib.h> 
+#include <stdlib.h>
+#include <math.h>
 /*  
  *  遵循位级浮点编码规则，实现具有如下原型的函数：
 
@@ -23,6 +24,10 @@ unsigned f2u(float a) {
     return *((unsigned *)(&a));
 }
 
+int is_number(float x) {
+    return (x == x);
+}
+
 float_bits float_absval(float_bits f) {
     unsigned exp = f >> 23 & 0xff;
     unsigned frac = f & 0x7fffff;
@@ -34,33 +39,20 @@ float_bits float_absval(float_bits f) {
 
 int main(void)
 {
-        float f = -0.0;
-        unsigned uf = f2u(f);
-        printf("%f(0x%X): %f\n", f, uf, u2f(float_absval(uf)));
-
-        f = 0.0;
-        uf = f2u(f);
-        printf("%f(0x%X): %f\n", f, uf, u2f(float_absval(uf)));
-
-        f = 1.0;
-        uf = f2u(f);
-        printf("%f(0x%X): %f\n", f, uf, u2f(float_absval(uf)));
-
-        f = -1.0;
-        uf = f2u(f);
-        printf("%f(0x%X): %f\n", f, uf, u2f(float_absval(uf)));
-
-        f = u2f(0x7F800000);    /* +oo */
-        uf = f2u(f);
-        printf("%f(0x%X): %f\n", f, uf, u2f(float_absval(uf)));
-
-        f = u2f(0xFF800000);    /* -oo */
-        uf = f2u(f);
-        printf("%f(0x%X): %f\n", f, uf, u2f(float_absval(uf)));
-
-        f = u2f(0x7F800001);    /* NaN */
-        uf = f2u(f);
-        printf("%f(0x%X): %f\n", f, uf, u2f(float_absval(uf)));
-
-        return 0;
+    unsigned i = 0;
+    int is_equal;
+    float f;
+    do {
+        f = u2f(i);
+        if (is_number(f)) {
+            is_equal = float_absval(i) == f2u(fabs(f));
+        } else {
+            is_equal = float_absval(i) == i;
+        }
+        if (!is_equal) {
+            printf("[%x]f = %e, float_absval = %e, %d\n", i, f, u2f(float_absval(i)), is_equal);
+        }
+        i++;
+    } while (i);
+    return 0;
 }

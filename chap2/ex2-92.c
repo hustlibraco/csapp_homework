@@ -41,14 +41,16 @@ int main(void)
 {
     unsigned i = 0;
     int is_equal;
+    float f;
     do {
-        if (is_number(u2f(i))) {
-            is_equal = float_negate(i) == f2u(-u2f(i));
+        f = u2f(i);
+        if (is_number(f)) {
+            is_equal = float_negate(i) == f2u(-f);
         } else {
             is_equal = float_negate(i) == i;
         }
         if (!is_equal) {
-            printf("[%x]f = %e, float_negate = %e, %d\n", i, u2f(i), u2f(float_negate(i)), is_equal);
+            printf("[%x]f = %e, float_negate = %e, %d\n", i, f, u2f(float_negate(i)), is_equal);
         }
         i++;
     } while (i);
