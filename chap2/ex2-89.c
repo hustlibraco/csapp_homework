@@ -2,7 +2,7 @@
 #include <limits.h>
 #include <stdlib.h> 
 /*  
- *  题目：计算2^x的浮点表示,x太小返回 0，x太大返回+oo。
+ *  题目：计算2^x的浮点表示,x太小返回0，x太大返回+oo。
  *
  */
 
