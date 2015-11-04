@@ -4,7 +4,7 @@
 /*  
  *  遵循位级浮点编码规则，实现具有如下原型的函数：
  *
- *	// Compute (int) f.
+ *  // Compute (int) f.
  *  // If conversion causes overflow or f is NaN, return 0x80000000
  *  int float_f2i(float_bits f);
  *
